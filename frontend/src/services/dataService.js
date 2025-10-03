@@ -99,7 +99,7 @@ const dataService = {
 
   async getAllUsers() {
     try {
-      const res = await fetch('http://localhost:8081/api/admin/users');
+      const res = await fetch('https://nishmitha-roots-7.onrender.com/api/admin/users');
       if (!res.ok) throw new Error('Failed to fetch users');
       return await res.json();
     } catch (error) {

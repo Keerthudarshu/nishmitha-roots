@@ -75,7 +75,7 @@ const CheckoutProcess = () => {
   const addTestItems = async () => {
     try {
       // First, try to get existing products from the backend
-      const response = await fetch('http://localhost:8081/api/admin/products');
+      const response = await fetch('https://nishmitha-roots-7.onrender.com/api/admin/products');
       let availableProducts = [];
       
       if (response.ok) {
@@ -113,7 +113,7 @@ const CheckoutProcess = () => {
         // Add products to backend
         for (const product of testProducts) {
           try {
-            const createResponse = await fetch('http://localhost:8081/api/admin/products', {
+            const createResponse = await fetch('https://nishmitha-roots-7.onrender.com/api/admin/products', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

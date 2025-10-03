@@ -51,7 +51,7 @@ const ProductManagement = () => {
       candidate = `/admin/products/images/${candidate}`;
     }
 
-    const base = apiClient?.defaults?.baseURL || 'http://localhost:8081/api';
+    const base = apiClient?.defaults?.baseURL || 'https://nishmitha-roots-7.onrender.com/api';
     const fullUrl = candidate.startsWith('/') ? `${base}${candidate}` : `${base}/${candidate}`;
     
     // Log for debugging

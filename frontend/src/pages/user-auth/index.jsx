@@ -74,7 +74,7 @@ const UserAuth = () => {
         }
       } else {
         // Registration logic (call /api/auth/register)
-        const res = await fetch('http://localhost:8081/api/auth/register', {
+        const res = await fetch('https://nishmitha-roots-7.onrender.com/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
