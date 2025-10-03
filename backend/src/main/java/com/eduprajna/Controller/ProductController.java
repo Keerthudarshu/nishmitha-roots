@@ -28,7 +28,7 @@ import com.eduprajna.service.StorageService;
 
 @RestController
 @RequestMapping("/api/admin/products")
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "https://nishmitha-roots.vercel.app"}, allowCredentials = "true")
 
 public class ProductController {
     @Autowired

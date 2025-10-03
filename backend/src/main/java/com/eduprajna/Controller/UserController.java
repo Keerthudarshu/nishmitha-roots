@@ -18,7 +18,7 @@ import com.eduprajna.repository.WishlistItemRepository;
 
 @RestController
 @RequestMapping("/api/admin/users")
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "https://nishmitha-roots.vercel.app"}, allowCredentials = "true")
 public class UserController {
 
     @Autowired

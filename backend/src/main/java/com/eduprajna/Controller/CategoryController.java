@@ -12,7 +12,7 @@ import com.eduprajna.repository.CategoryRepository;
 
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "https://nishmitha-roots.vercel.app"}, allowCredentials = "true")
 public class CategoryController {
     private final CategoryRepository categoryRepository;
 
