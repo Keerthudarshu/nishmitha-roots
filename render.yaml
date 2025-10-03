@@ -13,8 +13,20 @@ services:
       - key: PORT
         value: 8081
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://containers-us-west-199.railway.app:5432/railway?useSSL=false&allowPublicKeyRetrieval=true
+        fromDatabase:
+          name: nishmitha-roots-db
+          property: connectionString
       - key: SPRING_DATASOURCE_USERNAME
-        value: postgres
+        fromDatabase:
+          name: nishmitha-roots-db
+          property: user
       - key: SPRING_DATASOURCE_PASSWORD
-        value: your-password-here
+        fromDatabase:
+          name: nishmitha-roots-db
+          property: password
+
+databases:
+  - name: nishmitha-roots-db
+    databaseName: roots
+    user: rootsuser
+    plan: free
