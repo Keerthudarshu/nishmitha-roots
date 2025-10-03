@@ -18,3 +18,7 @@ services:
         value: neondb_owner
       - key: SPRING_DATASOURCE_PASSWORD
         value: npg_5w4EMPeZAGFh
+      - key: SPRING_DATASOURCE_DRIVER
+        value: org.postgresql.Driver
+      - key: HIBERNATE_DIALECT
+        value: org.hibernate.dialect.PostgreSQLDialect
