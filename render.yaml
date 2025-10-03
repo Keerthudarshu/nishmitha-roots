@@ -1,0 +1,45 @@
+services:
+  # Backend service
+  - type: web
+    name: nishmitha-roots-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SERVER_PORT
+        value: 8081
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://your-mysql-host:3306/roots?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - key: SPRING_DATASOURCE_USERNAME
+        value: your-db-username
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: your-db-password
+    healthCheckPath: /actuator/health
+
+  # Frontend service  
+  - type: web
+    name: nishmitha-roots-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run serve
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: ./frontend
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://nishmitha-roots-backend.onrender.com/api
+
+databases:
+  # You can add a database configuration here if using Render's managed database
+  # - name: nishmitha-roots-db
+  #   databaseName: roots
+  #   user: rootsuser
+  #   plan: free
