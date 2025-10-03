@@ -13,20 +13,8 @@ services:
       - key: PORT
         value: 8081
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: nishmitha-roots-db
-          property: connectionString
+        value: jdbc:postgresql://ep-quiet-mud-adzylpm4-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: nishmitha-roots-db
-          property: user
+        value: neondb_owner
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: nishmitha-roots-db
-          property: password
-
-databases:
-  - name: nishmitha-roots-db
-    databaseName: roots
-    user: rootsuser
-    plan: free
+        value: npg_5w4EMPeZAGFh
