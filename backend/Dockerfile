@@ -1,5 +1,8 @@
 # Multi-stage build for Render deployment
-FROM maven:3.9.4-openjdk-21-slim AS builder
+FROM eclipse-temurin:21-jdk-alpine AS builder
+
+# Install Maven
+RUN apk add --no-cache maven
 
 # Set working directory
 WORKDIR /app
@@ -23,7 +26,10 @@ COPY src ./src/
 RUN ./mvnw clean package -DskipTests
 
 # Runtime stage
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre-alpine
+
+# Install curl for health check
+RUN apk add --no-cache curl
 
 # Set working directory
 WORKDIR /app
