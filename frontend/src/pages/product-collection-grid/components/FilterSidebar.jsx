@@ -34,19 +34,11 @@ const FilterSidebar = ({
   ];
 
   const dietaryOptions = [
-    { id: 'vegan', label: 'Vegan', count: 45 },
-    { id: 'gluten-free', label: 'Gluten Free', count: 32 },
-    { id: 'no-preservatives', label: 'No Preservatives', count: 78 },
-    { id: 'organic', label: 'Organic', count: 56 },
-    { id: 'handmade', label: 'Handmade', count: 89 },
-    { id: 'no-palm-oil', label: 'No Palm Oil', count: 67 }
+   
   ];
 
   const brands = [
-    { id: 'neenus-natural', label: "Neenu\'s Natural", count: 156 },
-    { id: 'traditional-tastes', label: 'Traditional Tastes', count: 45 },
-    { id: 'organic-origins', label: 'Organic Origins', count: 32 },
-    { id: 'homemade-heritage', label: 'Homemade Heritage', count: 28 }
+   
   ];
 
   const FilterSection = ({ title, sectionKey, children }) => (
@@ -123,7 +115,7 @@ const FilterSidebar = ({
       </FilterSection>
 
       {/* Dietary Preferences */}
-      <FilterSection title="Dietary & Features" sectionKey="dietary">
+      {/* <FilterSection title="Dietary & Features" sectionKey="dietary">
         {dietaryOptions?.map((option) => (
           <div key={option?.id} className="flex items-center justify-between">
             <Checkbox
@@ -141,7 +133,7 @@ const FilterSidebar = ({
             </span>
           </div>
         ))}
-      </FilterSection>
+      </FilterSection> */}
 
       {/* Categories */}
       <FilterSection title="Categories" sectionKey="category">
@@ -165,7 +157,7 @@ const FilterSidebar = ({
       </FilterSection>
 
       {/* Brands */}
-      <FilterSection title="Brands" sectionKey="brand">
+      {/* <FilterSection title="Brands" sectionKey="brand">
         {brands?.map((brand) => (
           <div key={brand?.id} className="flex items-center justify-between">
             <Checkbox
@@ -183,7 +175,7 @@ const FilterSidebar = ({
             </span>
           </div>
         ))}
-      </FilterSection>
+      </FilterSection> */}
     </div>
   );
 

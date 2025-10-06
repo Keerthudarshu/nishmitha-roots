@@ -10,20 +10,15 @@ const FilterChips = ({ activeFilters, onRemoveFilter, onClearAll, categories = [
         '500-1000': '₹500 - ₹1000',
         'above-1000': 'Above ₹1000'
       },
-      dietary: {
-        'vegan': 'Vegan',
-        'gluten-free': 'Gluten Free',
-        'no-preservatives': 'No Preservatives',
-        'organic': 'Organic',
-        'handmade': 'Handmade',
-        'no-palm-oil': 'No Palm Oil'
-      },
-      brands: {
-        'neenus-natural': "Neenu\'s Natural",
-        'traditional-tastes': 'Traditional Tastes',
-        'organic-origins': 'Organic Origins',
-        'homemade-heritage': 'Homemade Heritage'
-      }
+      // dietary: {
+      //   'vegan': 'Vegan',
+      //   'gluten-free': 'Gluten Free',
+      //   'no-preservatives': 'No Preservatives',
+      //   'organic': 'Organic',
+      //   'handmade': 'Handmade',
+      //   'no-palm-oil': 'No Palm Oil'
+      // },
+      
     };
 
     // For categories, use the dynamic categories mapping

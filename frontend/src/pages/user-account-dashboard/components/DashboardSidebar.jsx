@@ -1,9 +1,12 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/AppIcon';
 
 const DashboardSidebar = ({ user, onSectionChange, activeSection }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   const menuItems = [
     {
@@ -88,13 +91,43 @@ const DashboardSidebar = ({ user, onSectionChange, activeSection }) => {
       </nav>
       {/* Logout Button */}
       <div className="mt-6 pt-6 border-t border-border">
-        <Link
-          to="/homepage"
-          className="w-full flex items-center space-x-3 p-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors duration-200"
+        <button
+          onClick={async () => {
+            try {
+              console.log('Logging out user...');
+              
+              // Show loading state if needed (optional)
+              const button = event.target.closest('button');
+              const originalText = button.querySelector('span').textContent;
+              button.querySelector('span').textContent = 'Logging out...';
+              button.disabled = true;
+              
+              const result = await signOut();
+              if (!result.error) {
+                console.log('Logout successful, redirecting to homepage');
+                // Small delay to show feedback before redirect
+                setTimeout(() => {
+                  navigate('/homepage');
+                }, 100);
+              } else {
+                console.error('Logout failed:', result.error);
+                // Reset button state on error
+                button.querySelector('span').textContent = originalText;
+                button.disabled = false;
+              }
+            } catch (error) {
+              console.error('Logout error:', error);
+              // Reset button state on error
+              const button = event.target.closest('button');
+              button.querySelector('span').textContent = 'Logout';
+              button.disabled = false;
+            }
+          }}
+          className="w-full flex items-center space-x-3 p-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors duration-200 disabled:opacity-50"
         >
           <Icon name="LogOut" size={20} />
           <span className="font-body font-medium">Logout</span>
-        </Link>
+        </button>
       </div>
     </div>
   );
