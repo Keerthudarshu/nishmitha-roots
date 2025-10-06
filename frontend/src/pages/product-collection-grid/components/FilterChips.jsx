@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
 
-const FilterChips = ({ activeFilters, onRemoveFilter, onClearAll }) => {
+const FilterChips = ({ activeFilters, onRemoveFilter, onClearAll, categories = [] }) => {
   const getFilterLabel = (type, value) => {
     const labels = {
       priceRange: {
@@ -18,14 +18,6 @@ const FilterChips = ({ activeFilters, onRemoveFilter, onClearAll }) => {
         'handmade': 'Handmade',
         'no-palm-oil': 'No Palm Oil'
       },
-      categories: {
-        'sweets': 'Sweets',
-        'savouries': 'Savouries',
-        'pickles': 'Pickles',
-        'combos': 'Combos',
-        'summer-coolers': 'Summer Coolers',
-        'kitchen-essentials': 'Kitchen Essentials'
-      },
       brands: {
         'neenus-natural': "Neenu\'s Natural",
         'traditional-tastes': 'Traditional Tastes',
@@ -33,6 +25,12 @@ const FilterChips = ({ activeFilters, onRemoveFilter, onClearAll }) => {
         'homemade-heritage': 'Homemade Heritage'
       }
     };
+
+    // For categories, use the dynamic categories mapping
+    if (type === 'categories') {
+      const category = categories.find(cat => cat.id === value);
+      return category?.label || value;
+    }
 
     return labels?.[type]?.[value] || value;
   };

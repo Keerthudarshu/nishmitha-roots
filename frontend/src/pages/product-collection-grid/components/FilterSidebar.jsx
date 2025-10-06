@@ -6,9 +6,10 @@ import { Checkbox } from '../../../components/ui/Checkbox';
 const FilterSidebar = ({ 
   isOpen, 
   onClose, 
-  filters, 
+  filters = {}, 
   onFilterChange, 
-  onClearFilters,
+  onClearFilters, 
+  categories = [], // Accept categories as props
   isMobile = false 
 }) => {
   const [expandedSections, setExpandedSections] = useState({
@@ -39,21 +40,6 @@ const FilterSidebar = ({
     { id: 'organic', label: 'Organic', count: 56 },
     { id: 'handmade', label: 'Handmade', count: 89 },
     { id: 'no-palm-oil', label: 'No Palm Oil', count: 67 }
-  ];
-
-  const categories = [
-    { id: 'unpolished-pulses-dals-rice', label: 'Unpolished Pulses, Dals & Rice', count: 15 },
-    { id: 'poha-aval', label: 'Poha / Aval', count: 3 },
-    { id: 'sugars-honey', label: 'Sugars & Honey', count: 6 },
-    { id: 'haircare-products', label: 'Haircare Products', count: 12 },
-    { id: 'skincare-products', label: 'Skincare Products', count: 8 },
-    { id: 'millet-items', label: 'Millet Items', count: 10 },
-    { id: 'powders', label: 'Powders', count: 10 },
-    { id: 'fries', label: 'Fries', count: 7 },
-    { id: 'herbal-handmade-soaps', label: 'Herbal Handmade Soaps', count: 20 },
-    { id: 'snacks', label: 'Snacks', count: 25 },
-    { id: 'herbal-products', label: 'Herbal Products', count: 30 },
-    { id: 'herbal-powders', label: 'Herbal Powders', count: 25 }
   ];
 
   const brands = [

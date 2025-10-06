@@ -11,6 +11,7 @@ import QuickViewModal from './components/QuickViewModal';
 import Button from '../../components/ui/Button';
 import dataService from '../../services/dataService';
 import productApi from '../../services/productApi';
+import categoryApi from '../../services/categoryApi';
 import apiClient from '../../services/api';
 
 const ProductCollectionGrid = () => {
@@ -40,6 +41,69 @@ const ProductCollectionGrid = () => {
     brands: []
   });
 
+  // Dynamic categories state
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [categoryMapping, setCategoryMapping] = useState({});
+
+  // Generate dynamic categories from products
+  const generateCategoriesFromProducts = (products, categoryMapping = {}) => {
+    const categoryMap = {};
+    
+    // Default category ID to name mapping (fallback for when backend returns IDs)
+    const defaultCategoryIdToName = {
+      '1': 'Rice & Grains',
+      '2': 'Pulses & Lentils', 
+      '3': 'Spices & Masalas',
+      '4': 'Cooking Oils',
+      '5': 'Healthy Snacks',
+      '6': 'Beverages',
+      '7': 'Dairy Products',
+      '8': 'Traditional Sweets',
+      '9': 'Organic Products',
+      '10': 'Herbal Products',
+      '11': 'Skincare Products',
+      '12': 'Haircare Products',
+      '13': 'Millet Items',
+      '14': 'Powders',
+      '15': 'Handmade Soaps',
+      // Add more mappings as needed
+    };
+    
+    // Merge with fetched category mapping
+    const combinedMapping = { ...defaultCategoryIdToName, ...categoryMapping };
+    
+    products.forEach(product => {
+      const category = product?.category || 'misc';
+      
+      if (categoryMap[category]) {
+        categoryMap[category].count++;
+      } else {
+        // Determine the display label
+        let label;
+        
+        // Check if category is a numeric ID
+        if (/^\d+$/.test(category)) {
+          // It's a numeric ID, use mapping or generate generic name
+          label = combinedMapping[category] || `Category ${category}`;
+        } else {
+          // It's already a name, format it nicely
+          label = category
+            .split(/[-_\s]+/) // Split on hyphens, underscores, or spaces
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+        }
+        
+        categoryMap[category] = {
+          id: category,
+          label: label,
+          count: 1
+        };
+      }
+    });
+
+    return Object.values(categoryMap).sort((a, b) => a.label.localeCompare(b.label));
+  };
+
   // Resolve relative image URLs returned by backend to absolute URLs using API base
   const resolveImageUrl = (p) => {
     const candidate = p?.imageUrl || p?.image || p?.image_path || p?.thumbnailUrl;
@@ -56,6 +120,26 @@ const ProductCollectionGrid = () => {
     const loadProducts = async () => {
       try {
         setLoading(true);
+        
+        // Load categories from backend API first
+        let categoryMapping = {};
+        try {
+          console.log('Fetching categories from backend API...');
+          const categoriesRes = await categoryApi.getAll();
+          if (Array.isArray(categoriesRes)) {
+            // Create mapping from ID to name
+            categoriesRes.forEach(cat => {
+              if (cat.id && cat.name) {
+                categoryMapping[cat.id.toString()] = cat.name;
+              }
+            });
+            console.log('Successfully loaded category mapping:', categoryMapping);
+          }
+        } catch (e) {
+          console.warn('Failed to load categories, using fallback mapping:', e?.message);
+        }
+        setCategoryMapping(categoryMapping);
+        
         // Load products from backend API
         let apiProducts = [];
         try {
@@ -109,11 +193,17 @@ const ProductCollectionGrid = () => {
 
         setProducts(normalizedProducts);
         setFilteredProducts(working);
+        
+        // Generate categories from all products with mapping
+        const categories = generateCategoriesFromProducts(normalizedProducts, categoryMapping);
+        console.log('Generated categories for FilterSidebar:', categories);
+        setAvailableCategories(categories);
       } catch (error) {
         console.error('Error loading products:', error);
         // Set empty array as fallback
         setProducts([]);
         setFilteredProducts([]);
+        setAvailableCategories([]);
       } finally {
         setLoading(false);
       }
@@ -300,6 +390,7 @@ const ProductCollectionGrid = () => {
               filters={filters}
               onFilterChange={handleFilterChange}
               onClearFilters={handleClearAllFilters}
+              categories={availableCategories}
             />
           </div>
 
@@ -333,6 +424,7 @@ const ProductCollectionGrid = () => {
               activeFilters={filters}
               onRemoveFilter={handleRemoveFilter}
               onClearAll={handleClearAllFilters}
+              categories={availableCategories}
             />
 
             {/* Product Grid */}
@@ -373,6 +465,7 @@ const ProductCollectionGrid = () => {
         filters={filters}
         onFilterChange={handleFilterChange}
         onClearFilters={handleClearAllFilters}
+        categories={availableCategories}
         isMobile={true}
       />
       {/* Quick View Modal */}
