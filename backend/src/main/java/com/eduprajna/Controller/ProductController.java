@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.eduprajna.entity.Product;
 import com.eduprajna.service.ProductService;
+import com.eduprajna.service.CloudinaryService;
 import com.eduprajna.service.StorageService;
 
 @RestController
@@ -35,7 +36,10 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
-    private StorageService storageService;
+    private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private StorageService storageService; // Keep for fallback compatibility
 
     @GetMapping
     public ResponseEntity<List<Product>> getAll() {
@@ -55,8 +59,16 @@ public class ProductController {
             @RequestParam(value = "image", required = false) MultipartFile imageFile
     ) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            String relativePath = storageService.store(imageFile);
-            p.setImageUrl(relativePath);
+            try {
+                // Try Cloudinary first (for permanent storage)
+                String cloudinaryUrl = cloudinaryService.uploadFile(imageFile);
+                p.setImageUrl(cloudinaryUrl);
+            } catch (Exception e) {
+                // Fallback to local storage if Cloudinary fails
+                System.err.println("Cloudinary upload failed, falling back to local storage: " + e.getMessage());
+                String relativePath = storageService.store(imageFile);
+                p.setImageUrl(relativePath);
+            }
         }
         Product saved = productService.save(p);
         return ResponseEntity.ok(saved);
@@ -74,9 +86,17 @@ public class ProductController {
         try {
             Product existing = productService.getById(id);
             if (existing != null && existing.getImageUrl() != null) {
-                String filename = storageService.extractFilenameFromUrl(existing.getImageUrl());
-                if (filename != null) {
-                    storageService.delete(filename);
+                String imageUrl = existing.getImageUrl();
+                
+                // Check if it's a Cloudinary URL
+                if (imageUrl.contains("cloudinary.com")) {
+                    cloudinaryService.deleteFile(imageUrl);
+                } else {
+                    // Handle local storage images
+                    String filename = storageService.extractFilenameFromUrl(imageUrl);
+                    if (filename != null) {
+                        storageService.delete(filename);
+                    }
                 }
             }
         } catch (Exception ignored) {

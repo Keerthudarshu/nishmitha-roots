@@ -11,13 +11,16 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        // Serve files from project uploads directory at /uploads/** URL pattern
+        // Keep local file serving for fallback compatibility
+        // Note: With Cloudinary integration, most images will be served directly from CDN
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("classpath:/static/uploads/", "file:./uploads/");
+                .addResourceLocations("classpath:/static/uploads/", "file:./uploads/")
+                .setCachePeriod(86400); // Cache for 24 hours
         
-        // Also serve files from runtime uploads directory for admin product images
+        // Serve local admin product images (fallback only)
         registry.addResourceHandler("/admin/products/images/**")
-                .addResourceLocations("file:./uploads/", "classpath:/static/uploads/");
+                .addResourceLocations("file:./uploads/", "classpath:/static/uploads/")
+                .setCachePeriod(86400); // Cache for 24 hours
     }
 
     @Override
