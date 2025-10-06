@@ -4,11 +4,23 @@ import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Image from '../../../components/AppImage';
 import productApi from '../../../services/productApi';
+import apiClient from '../../../services/api';
 
 const RelatedProducts = ({ onAddToCart }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Resolve relative image URLs returned by backend to absolute URLs using API base
+  const resolveImageUrl = (p) => {
+    const candidate = p?.imageUrl || p?.image || p?.image_path || p?.thumbnailUrl;
+    if (!candidate) return '/assets/images/no_image.png';
+    if (candidate.startsWith('http://') || candidate.startsWith('https://') || candidate.startsWith('data:')) {
+      return candidate;
+    }
+    const base = apiClient?.defaults?.baseURL || '';
+    return candidate.startsWith('/') ? `${base}${candidate}` : `${base}/${candidate}`;
+  };
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
@@ -20,19 +32,28 @@ const RelatedProducts = ({ onAddToCart }) => {
         const products = await productApi.getAll({ limit: 4 });
         
         // Transform the data to match the expected format
-        const transformedProducts = products?.map(product => ({
-          id: product.id,
-          name: product.name,
-          price: parseFloat(product.price) || 0,
-          originalPrice: parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
-          image: product.imageUrl || product.image || '/assets/images/no_image.png',
-          rating: parseFloat(product.rating) || 4.5,
-          reviews: parseInt(product.reviewCount) || Math.floor(Math.random() * 100) + 10,
-          badges: product.tags ? (Array.isArray(product.tags) ? product.tags : product.tags.split(',').map(tag => tag.trim())) : [],
-          variant: product.variant || product.weight || product.size || '1 unit',
-          category: product.category,
-          description: product.description
-        })) || [];
+        const transformedProducts = products?.map(product => {
+          const resolvedImageUrl = resolveImageUrl(product);
+          console.log('RelatedProducts - Product image resolution:', {
+            productId: product.id,
+            originalImageUrl: product.imageUrl || product.image,
+            resolvedImageUrl
+          });
+          
+          return {
+            id: product.id,
+            name: product.name,
+            price: parseFloat(product.price) || 0,
+            originalPrice: parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
+            image: resolvedImageUrl,
+            rating: parseFloat(product.rating) || 4.5,
+            reviews: parseInt(product.reviewCount) || Math.floor(Math.random() * 100) + 10,
+            badges: product.tags ? (Array.isArray(product.tags) ? product.tags : product.tags.split(',').map(tag => tag.trim())) : [],
+            variant: product.variant || product.weight || product.size || '1 unit',
+            category: product.category,
+            description: product.description
+          };
+        }) || [];
         
         setRelatedProducts(transformedProducts);
       } catch (err) {
