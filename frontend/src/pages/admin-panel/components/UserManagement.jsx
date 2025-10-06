@@ -1,34 +1,67 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, User, Mail, Phone, Calendar } from 'lucide-react';
-import dataService from '../../../services/dataService';
+import { apiClient } from '../../../services/api';
 import Input from '../../../components/ui/Input';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-  setLoading(true);
-  dataService.getAllUsers()
-    .then(allUsers => {
-      setUsers(allUsers.filter(user => user.role !== 'admin')); // show only non-admins
-      setLoading(false);
-    })
-    .catch(() => {
-      setUsers([]);
-      setLoading(false);
-    });
-}, []);
+    const fetchUsers = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        console.log('Fetching users from database...');
+        const response = await apiClient.get('/admin/users');
+        console.log('Users fetched successfully:', response.data);
+        setUsers(response.data || []);
+      } catch (err) {
+        console.error('Failed to fetch users:', err);
+        setError('Failed to load users from database');
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(user => {
-    return user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    return (user.name && user.name.toLowerCase().includes(searchLower)) ||
+           (user.email && user.email.toLowerCase().includes(searchLower));
   });
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-muted-foreground">Loading users from database...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-destructive mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -81,7 +114,7 @@ const UserManagement = () => {
               <div className="flex items-center space-x-2 text-sm">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
                 <span className="text-foreground">
-                  Joined {new Date(user.createdAt).toLocaleDateString()}
+                  Joined {user.memberSince ? new Date(user.memberSince).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
             </div>
@@ -102,9 +135,25 @@ const UserManagement = () => {
         ))}
       </div>
 
-      {filteredUsers.length === 0 && (
+      {filteredUsers.length === 0 && !loading && !error && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No users found matching your criteria.</p>
+          <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
+            <User className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <p className="text-muted-foreground mb-2">
+            {searchTerm 
+              ? `No users found matching "${searchTerm}"`
+              : 'No users found in the database'
+            }
+          </p>
+          {searchTerm && (
+            <button 
+              onClick={() => setSearchTerm('')}
+              className="text-primary hover:text-primary/80 text-sm"
+            >
+              Clear search
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Import your page components
 import Homepage from './pages/homepage';
@@ -62,10 +63,24 @@ function App() {
                 <Route path="/product-detail-page/:id" element={<ProductDetailPage />} />
                 <Route path="/product-detail-page" element={<ProductDetailPage />} />
                 <Route path="/shopping-cart" element={<ShoppingCart />} />
-                <Route path="/checkout-process" element={<CheckoutProcess />} />
+                <Route 
+                  path="/checkout-process" 
+                  element={
+                    <ProtectedRoute message="Please sign in to continue with checkout">
+                      <CheckoutProcess />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/user-login" element={<UserAuth />} />
                 <Route path="/user-register" element={<UserAuth />} />
-                <Route path="/user-account-dashboard" element={<UserAccountDashboard />} />
+                <Route 
+                  path="/user-account-dashboard" 
+                  element={
+                    <ProtectedRoute message="Please sign in to access your account dashboard">
+                      <UserAccountDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/admin-login" element={<AdminLogin />} />
                 <Route 
                   path="/admin-dashboard" 

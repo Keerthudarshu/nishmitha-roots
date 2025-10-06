@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-// import dataService from '../services/dataService'
+import { apiClient } from '../services/api'
 
 const AuthContext = createContext({})
 
@@ -20,10 +20,17 @@ export const AuthProvider = ({ children, setError }) => {
   useEffect(() => {
     // Check for existing session in localStorage (from backend login)
     const sessionData = localStorage.getItem('user');
+    console.log('AuthContext initialization - sessionData:', sessionData);
     if (sessionData) {
-      const user = JSON.parse(sessionData);
-      setUser(user);
-      setUserProfile(user);
+      try {
+        const user = JSON.parse(sessionData);
+        console.log('AuthContext initialization - parsed user:', user);
+        setUser(user);
+        setUserProfile(user);
+      } catch (error) {
+        console.error('AuthContext initialization - error parsing session data:', error);
+        localStorage.removeItem('user');
+      }
     }
     setLoading(false);
   }, []);
@@ -31,22 +38,40 @@ export const AuthProvider = ({ children, setError }) => {
   const signIn = async (email, password) => {
     try {
       setLoading(true);
-      const res = await fetch('https://nishmitha-roots-7.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      console.log('Attempting login for:', email);
+      
+      const response = await apiClient.post('/auth/login', { 
+        email, 
+        password 
       });
-      if (res.ok) {
-        const user = await res.json();
-        setUser(user);
-        setUserProfile(user);
-        localStorage.setItem('user', JSON.stringify(user));
-        return { user, error: null };
+      
+      if (response.data) {
+        const userData = {
+          id: response.data.id,
+          name: response.data.name,
+          email: response.data.email,
+          role: response.data.role,
+          // Add default values for fields not returned by backend
+          phone: response.data.phone || '',
+          memberSince: response.data.memberSince || new Date().toISOString().split('T')[0],
+          totalOrders: response.data.totalOrders || 0,
+          loyaltyPoints: response.data.loyaltyPoints || 0,
+          isActive: response.data.isActive !== false
+        };
+        
+        console.log('Login successful, user data:', userData);
+        setUser(userData);
+        setUserProfile(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        return { user: userData, error: null };
       } else {
-        return { user: null, error: { message: 'Invalid credentials' } };
+        return { user: null, error: { message: 'Invalid response from server' } };
       }
     } catch (error) {
-      return { user: null, error };
+      console.error('Login error:', error);
+      const errorMessage = error.response?.data || error.message || 'Login failed';
+      return { user: null, error: { message: errorMessage } };
     } finally {
       setLoading(false);
     }
@@ -54,11 +79,13 @@ export const AuthProvider = ({ children, setError }) => {
 
   const signOut = async () => {
     try {
+      console.log('Signing out user');
       setUser(null);
       setUserProfile(null);
-      localStorage.removeItem('neenu_auth_session');
+      localStorage.removeItem('user');
       return { error: null };
     } catch (error) {
+      console.error('Signout error:', error);
       return { error };
     }
   };
@@ -70,44 +97,38 @@ export const AuthProvider = ({ children, setError }) => {
   const signUp = async (userData) => {
     try {
       setLoading(true);
+      console.log('Attempting registration for:', userData.email);
       
-      // Check if user already exists
-      const existingUser = dataService.getUserByEmail(userData.email);
-      if (existingUser) {
-        return { user: null, error: { message: 'User already exists with this email' } };
-      }
-      
-      // Create new user
-      const newUser = dataService.addUser({
+      const response = await apiClient.post('/auth/register', {
         name: userData.name,
         email: userData.email,
         password: userData.password,
-        role: 'customer',
         phone: userData.phone || '',
-        memberSince: new Date().toISOString().split('T')[0],
-        totalOrders: 0,
-        totalSpent: 0,
-        loyaltyPoints: 0,
-        totalSaved: 0,
-        isActive: true
+        role: 'customer' // Default role for new users
       });
       
-      if (newUser) {
-        setUser(newUser);
-        setUserProfile(newUser);
+      if (response.data) {
+        console.log('Registration successful:', response.data);
         
-        // Save session
-        localStorage.setItem('neenu_auth_session', JSON.stringify({
-          userId: newUser.id,
-          timestamp: Date.now()
-        }));
-        
-        return { user: newUser, error: null };
+        // After successful registration, automatically sign in the user
+        const loginResult = await signIn(userData.email, userData.password);
+        if (loginResult.user) {
+          return { user: loginResult.user, error: null };
+        } else {
+          return { 
+            user: null, 
+            error: { 
+              message: 'Registration successful but automatic login failed. Please sign in manually.' 
+            } 
+          };
+        }
       } else {
-        return { user: null, error: { message: 'Failed to create user' } };
+        return { user: null, error: { message: 'Registration failed' } };
       }
     } catch (error) {
-      return { user: null, error };
+      console.error('Registration error:', error);
+      const errorMessage = error.response?.data || error.message || 'Registration failed';
+      return { user: null, error: { message: errorMessage } };
     } finally {
       setLoading(false);
     }
@@ -117,13 +138,18 @@ export const AuthProvider = ({ children, setError }) => {
     try {
       if (!user) return { error: { message: 'No user logged in' } };
       
+      // Update local state immediately for better UX
       const updatedUser = { ...user, ...updates };
       setUser(updatedUser);
       setUserProfile(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       
-      // In a real app, you'd update the database here
+      // TODO: Add backend API call to update user profile when endpoint is available
+      // const response = await apiClient.put(`/auth/profile/${user.id}`, updates);
+      
       return { error: null };
     } catch (error) {
+      console.error('Profile update error:', error);
       return { error };
     }
   };

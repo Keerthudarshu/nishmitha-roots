@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Icon from '../AppIcon';
+import { useAuth } from '../../contexts/AuthContext';
 
 import Input from './Input';
 import AnnouncementBar from './AnnouncementBar';
@@ -8,9 +9,11 @@ import MegaMenu from './MegaMenu';
 import CartDrawer from './CartDrawer';
 import { useCart } from '../../contexts/CartContext.jsx';
 
-const Header = ({ isLoggedIn = false, onSearch = () => {} }) => {
+const Header = ({ onSearch = () => {} }) => {
   const { cartItems, getCartItemCount, updateQuantity, removeFromCart } = useCart();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
@@ -27,7 +30,22 @@ const Header = ({ isLoggedIn = false, onSearch = () => {} }) => {
     setIsMobileMenuOpen(false);
     setIsMegaMenuOpen(false);
     setIsSearchOpen(false);
+    setIsAccountDropdownOpen(false);
   }, [location]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isAccountDropdownOpen && !event.target.closest('.account-dropdown')) {
+        setIsAccountDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isAccountDropdownOpen]);
 
   useEffect(() => {
     const q = searchQuery.trim();
@@ -176,19 +194,70 @@ const Header = ({ isLoggedIn = false, onSearch = () => {} }) => {
             {/* Right Actions */}
             <div className="flex items-center space-x-4">
               {/* User Account */}
-              {isLoggedIn ? (
-                <Link
-                  to="/user-account-dashboard"
-                  className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors duration-200"
-                >
-                  <Icon name="User" size={20} />
-                </Link>
+              {user ? (
+                <div className="relative account-dropdown">
+                  <button
+                    onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
+                    className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors duration-200"
+                  >
+                    <Icon name="User" size={20} />
+                    <span className="hidden sm:inline font-body text-sm">
+                      {user.name || user.email?.split('@')[0] || 'Account'}
+                    </span>
+                    <Icon name="ChevronDown" size={16} className={`transition-transform duration-200 ${isAccountDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {/* Account Dropdown */}
+                  {isAccountDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-warm-lg z-50">
+                      <div className="py-2">
+                        <Link
+                          to="/user-account-dashboard"
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-accent/50 transition-colors duration-200"
+                          onClick={() => setIsAccountDropdownOpen(false)}
+                        >
+                          <Icon name="User" size={16} className="inline mr-2" />
+                          My Account
+                        </Link>
+                        <Link
+                          to="/user-account-dashboard?section=orders"
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-accent/50 transition-colors duration-200"
+                          onClick={() => setIsAccountDropdownOpen(false)}
+                        >
+                          <Icon name="Package" size={16} className="inline mr-2" />
+                          Order History
+                        </Link>
+                        <Link
+                          to="/user-account-dashboard?section=wishlist"
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-accent/50 transition-colors duration-200"
+                          onClick={() => setIsAccountDropdownOpen(false)}
+                        >
+                          <Icon name="Heart" size={16} className="inline mr-2" />
+                          Wishlist
+                        </Link>
+                        <hr className="my-1 border-border" />
+                        <button
+                          onClick={async () => {
+                            setIsAccountDropdownOpen(false);
+                            await signOut();
+                            navigate('/');
+                          }}
+                          className="block w-full text-left px-4 py-2 text-sm text-destructive hover:bg-accent/50 transition-colors duration-200"
+                        >
+                          <Icon name="LogOut" size={16} className="inline mr-2" />
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <Link
                   to="/user-login"
                   className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors duration-200"
                 >
                   <Icon name="User" size={20} />
+                  <span className="hidden sm:inline font-body text-sm">Sign In</span>
                 </Link>
               )}
 
@@ -280,13 +349,36 @@ const Header = ({ isLoggedIn = false, onSearch = () => {} }) => {
               ))}
 
               {/* Mobile-only links */}
-              <Link
-                to="/user-account-dashboard"
-                className="flex items-center space-x-2 font-body font-medium text-foreground hover:text-primary transition-colors duration-200 py-2 sm:hidden"
-              >
-                <Icon name="User" size={16} />
-                <span>My Account</span>
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    to="/user-account-dashboard"
+                    className="flex items-center space-x-2 font-body font-medium text-foreground hover:text-primary transition-colors duration-200 py-2 sm:hidden"
+                  >
+                    <Icon name="User" size={16} />
+                    <span>My Account</span>
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      setIsMobileMenuOpen(false);
+                      await signOut();
+                      navigate('/');
+                    }}
+                    className="flex items-center space-x-2 font-body font-medium text-destructive hover:text-destructive/80 transition-colors duration-200 py-2 sm:hidden"
+                  >
+                    <Icon name="LogOut" size={16} />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/user-login"
+                  className="flex items-center space-x-2 font-body font-medium text-foreground hover:text-primary transition-colors duration-200 py-2 sm:hidden"
+                >
+                  <Icon name="User" size={16} />
+                  <span>Sign In</span>
+                </Link>
+              )}
             </nav>
           </div>
         )}

@@ -44,19 +44,6 @@ const UserAccountDashboard = () => {
     return candidate.startsWith('/') ? `${base}${candidate}` : `${base}/${candidate}`;
   };
 
-  // Redirect to login if user is not authenticated
-  useEffect(() => {
-    if (!loading && !authUser) {
-      navigate('/user-login', { 
-        state: { 
-          from: '/user-account-dashboard',
-          message: 'Please sign in to access your account dashboard'
-        },
-        replace: true
-      });
-    }
-  }, [authUser, loading, navigate]);
-
   // Only use authenticated user data - fetch profile from backend
   const [user, setUser] = useState(null);
 
@@ -463,7 +450,6 @@ const UserAccountDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header 
-        isLoggedIn={!!authUser}
         onSearch={(query) => console.log('Search:', query)}
       />
       <div className="container mx-auto px-4 py-8">

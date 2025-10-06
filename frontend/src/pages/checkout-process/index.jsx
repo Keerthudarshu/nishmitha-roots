@@ -48,19 +48,7 @@ const CheckoutProcess = () => {
   const [deliveryData, setDeliveryData] = useState(null);
   const [paymentData, setPaymentData] = useState(null);
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/user-login', { 
-        state: { 
-          from: '/checkout-process',
-          message: 'Please sign in to continue with checkout'
-        }
-      });
-    }
-  }, [user, loading, navigate]);
-
-  // Validate cart is not empty - show message instead of redirecting for testing
+  // Cart validation - show message instead of redirecting for testing
   const [showEmptyCartMessage, setShowEmptyCartMessage] = useState(false);
   
   useEffect(() => {

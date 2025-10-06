@@ -83,7 +83,6 @@ const Homepage = () => {
         {/* Header */}
         <Header
           cartItemCount={getCartItemCount()}
-          isLoggedIn={false}
           onSearch={handleSearch}
           cartItems={cartItems}
         />

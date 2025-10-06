@@ -6,12 +6,11 @@ import Header from '../../components/ui/Header';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Icon from '../../components/AppIcon';
-import dataService from '../../services/dataService';
 
 const UserAuth = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn } = useAuth ? useAuth() : { signIn: async () => ({ user: null, error: { message: 'No Auth' } }) };
+  const { signIn, signUp } = useAuth ? useAuth() : { signIn: async () => ({ user: null, error: { message: 'No Auth' } }), signUp: async () => ({ user: null, error: { message: 'No Auth' } }) };
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -62,42 +61,36 @@ const UserAuth = () => {
     if (!validateForm()) return;
     setLoading(true);
     setError('');
+    
     try {
       if (isLogin) {
         const { user, error } = await signIn(formData.email, formData.password);
-        if (user && user.role === 'user') {
-          navigate('/user-account-dashboard');
+        if (user) {
+          // Get the redirect URL from location state or default to homepage
+          const from = location.state?.from || '/homepage';
+          navigate(from, { replace: true });
         } else if (error) {
           setError(error.message || 'Invalid credentials');
         } else {
-          setError('You are not authorized as a user.');
+          setError('Login failed. Please try again.');
         }
       } else {
-        // Registration logic (call /api/auth/register)
-        const res = await fetch('https://nishmitha-roots-7.onrender.com/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            phone: formData.phone
-          }),
+        // Registration using AuthContext signUp method
+        const { user, error } = await signUp({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone
         });
-        if (res.ok) {
-          setIsLogin(true);
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            password: '',
-            confirmPassword: ''
-          });
-          setErrors({});
-          navigate('/user-login', { state: { message: 'Account created successfully! Please sign in.' } });
+        
+        if (user) {
+          // Registration successful and user is automatically logged in
+          const from = location.state?.from || '/homepage';
+          navigate(from, { replace: true });
+        } else if (error) {
+          setError(error.message || 'Registration failed');
         } else {
-          const errorData = await res.json().catch(() => ({}));
-          setError(errorData.message || 'Registration failed. Please try again.');
+          setError('Registration failed. Please try again.');
         }
       }
     } catch (err) {
