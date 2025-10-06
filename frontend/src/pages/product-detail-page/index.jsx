@@ -245,7 +245,7 @@ const ProductDetailPage = () => {
     if (!variant) return;
 
     const productToAdd = {
-      id: `${item?.productId}-${item?.variantId}`,
+      id: item?.productId, // Use simple product ID
       productId: item?.productId,
       variantId: item?.variantId,
       name: product?.name,

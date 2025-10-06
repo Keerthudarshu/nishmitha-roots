@@ -172,12 +172,12 @@ export const CartProvider = ({ children }) => {
 
         setCartItems((prev) => {
           const existingItem = prev.find(
-            (item) => item.id === (sanitizedProduct.productId || sanitizedProduct.id)
+            (item) => item.id === sanitizedProduct.id
           );
           if (existingItem) {
             showNotification(`Updated ${sanitizedProduct.name} quantity in cart!`);
             return prev.map((item) =>
-              item.id === (sanitizedProduct.productId || sanitizedProduct.id)
+              item.id === sanitizedProduct.id
                 ? {
                     ...item,
                     quantity: apiResponse.quantity,
@@ -192,7 +192,7 @@ export const CartProvider = ({ children }) => {
             return [
               ...prev,
               {
-                id: apiResponse.productId,
+                id: sanitizedProduct.id, // Use the sanitizedProduct.id instead of apiResponse.productId
                 name: apiResponse.name,
                 image: resolveImageUrl(apiResponse.imageUrl),
                 price: apiResponse.price,

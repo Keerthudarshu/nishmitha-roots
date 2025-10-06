@@ -64,7 +64,7 @@ const ProductCard = ({
       return;
     }
     const cartItem = {
-      id: `${product.id}-default`,
+      id: product.id, // Use simple product ID
       productId: product.id,
       name: product.name,
       price: product.price,
@@ -90,7 +90,7 @@ const ProductCard = ({
     }
 
     const cartItem = {
-      id: `${product.id}-${selectedVariant.id}`, // Unique ID for each variant
+      id: product.id, // Use simple product ID for variants too 
       productId: product.id,
       name: product.name,
       price: selectedVariant.salePrice || selectedVariant.price,
