@@ -159,6 +159,35 @@ mvn clean compile
 mvn test
 ```
 
+### Cloudinary image uploads (recommended)
+
+This project can upload product images to Cloudinary instead of storing them in the local `uploads/` folder.
+
+1. Create a Cloudinary account and get your credentials (cloud name, api key, api secret). The SDK supports a single `CLOUDINARY_URL` environment variable in the format:
+
+```
+cloudinary://<api_key>:<api_secret>@<cloud_name>
+```
+
+2. For local development on Windows PowerShell, set the env var before running the app:
+
+```powershell
+$env:CLOUDINARY_URL = 'cloudinary://12345:abcd@mycloud'
+mvn spring-boot:run
+```
+
+3. In production, set `CLOUDINARY_URL` in your host/environment (e.g., Vercel, Docker secrets, Kubernetes secrets).
+
+4. Test upload with curl (multipart/form-data):
+
+```bash
+curl -X POST "http://localhost:8081/api/admin/products" \
+   -F 'product={"name":"Test","price":10.0};type=application/json' \
+   -F "image=@/path/to/file.jpg"
+```
+
+After a successful upload the `imageUrl` field stored in the product will contain a Cloudinary secure URL which the frontend can use directly.
+
 ### Code Style
 Follow Spring Boot and Java best practices:
 - Use proper package structure

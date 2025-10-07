@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -37,6 +36,9 @@ public class ProductController {
     @Autowired
     private StorageService storageService;
 
+    @Autowired
+    private com.eduprajna.service.CloudinaryStorageService cloudinaryStorageService;
+
     @GetMapping
     public ResponseEntity<List<Product>> getAll() {
         return ResponseEntity.ok(productService.getAll());
@@ -55,16 +57,30 @@ public class ProductController {
             @RequestParam(value = "image", required = false) MultipartFile imageFile
     ) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            String relativePath = storageService.store(imageFile);
-            p.setImageUrl(relativePath);
+            com.eduprajna.service.CloudinaryStorageService.UploadResult res = cloudinaryStorageService.upload(imageFile);
+            if (res != null) {
+                p.setImageUrl(res.getUrl());
+                p.setImagePublicId(res.getPublicId());
+            }
         }
         Product saved = productService.save(p);
         return ResponseEntity.ok(saved);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product p) {
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Product> update(
+            @PathVariable Long id,
+            @RequestPart("product") Product p,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException {
         p.setId(id);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            com.eduprajna.service.CloudinaryStorageService.UploadResult res = cloudinaryStorageService.upload(imageFile);
+            if (res != null) {
+                p.setImageUrl(res.getUrl());
+                p.setImagePublicId(res.getPublicId());
+            }
+        }
         return ResponseEntity.ok(productService.save(p));
     }
 
@@ -74,9 +90,11 @@ public class ProductController {
         try {
             Product existing = productService.getById(id);
             if (existing != null && existing.getImageUrl() != null) {
-                String filename = storageService.extractFilenameFromUrl(existing.getImageUrl());
-                if (filename != null) {
-                    storageService.delete(filename);
+                // Prefer deleting by saved public id (more reliable). Fallback to stored URL.
+                if (existing.getImagePublicId() != null && !existing.getImagePublicId().isEmpty()) {
+                    cloudinaryStorageService.delete(existing.getImagePublicId());
+                } else {
+                    cloudinaryStorageService.delete(existing.getImageUrl());
                 }
             }
         } catch (Exception ignored) {

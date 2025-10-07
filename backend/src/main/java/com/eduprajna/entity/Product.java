@@ -32,6 +32,9 @@ public class Product {
     
     @Column(length = 500)
     private String imageUrl; // Store image as Base64 string or URL
+
+    @Column(length = 255)
+    private String imagePublicId; // Cloudinary public_id for deletion
     
     @Column(length = 50)
     private String weight;
@@ -111,6 +114,14 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getImagePublicId() {
+        return imagePublicId;
+    }
+
+    public void setImagePublicId(String imagePublicId) {
+        this.imagePublicId = imagePublicId;
     }
 
     public String getWeight() {

@@ -17,6 +17,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Deprecated
+// This service stores files on the local filesystem. For production we recommend
+// using `CloudinaryStorageService` which uploads files to Cloudinary and returns
+// a remote URL. Keep this class only for local development/backwards compatibility.
 public class StorageService {
     // Use project-relative uploads directory - resolve to absolute path to avoid multipart conflicts
     private static final String UPLOAD_DIR = new File("./uploads").getAbsolutePath();
