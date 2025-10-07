@@ -21,7 +21,7 @@ const AdminHeader = ({ user, onToggleSidebar }) => {
           <Menu size={20} />
         </button>
         <h1 className="text-lg font-heading font-semibold text-foreground">
-          Neenu's Natural - Admin
+          Roots Traditional - Admin
         </h1>
       </div>
 

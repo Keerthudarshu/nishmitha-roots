@@ -68,7 +68,7 @@ const saveOrdersToStorage = () => {
 
 // Settings data
 const settings = {
-  siteName: "Neenu's Natural",
+  siteName: "Roots Traditional",
   currency: "INR",
   shippingFee: 50,
   freeShippingThreshold: 500,

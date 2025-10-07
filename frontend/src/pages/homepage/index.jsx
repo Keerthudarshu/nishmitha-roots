@@ -63,18 +63,18 @@ const Homepage = () => {
   return (
     <>
       <Helmet>
-        <title>Neenu's Natural - Premium Natural & Handmade Food Products</title>
+        <title>Roots Traditional - Premium Natural & Handmade Food Products</title>
         <meta
           name="description"
-          content="Discover authentic Indian flavors with Neenu's Natural premium handmade food products. From traditional sweets to organic spices, experience pure natural taste with free shipping on orders above ₹499."
+          content="Discover authentic Indian flavors with Roots Traditional premium handmade food products. From traditional sweets to organic spices, experience pure natural taste with free shipping on orders above ₹499."
         />
         <meta name="keywords" content="natural food products, handmade sweets, organic spices, traditional pickles, pure ghee, Indian food, authentic flavors, chemical-free, preservative-free" />
-        <meta property="og:title" content="Neenu's Natural - Premium Natural & Handmade Food Products" />
+        <meta property="og:title" content="Roots Traditional - Premium Natural & Handmade Food Products" />
         <meta property="og:description" content="Discover authentic Indian flavors with premium handmade food products. Free shipping on orders above ₹499." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://neenusnatural.com/homepage" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Neenu's Natural - Premium Natural Food Products" />
+        <meta name="twitter:title" content="Roots Traditional - Premium Natural Food Products" />
         <meta name="twitter:description" content="Authentic Indian flavors, handmade with love. Free shipping on orders above ₹499." />
         <link rel="canonical" href="https://neenusnatural.com/homepage" />
       </Helmet>

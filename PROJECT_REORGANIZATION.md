@@ -2,7 +2,7 @@
 
 ## ✅ Completed: Frontend and Backend Separation
 
-The Neenu's Natural e-commerce project has been successfully reorganized into a proper full-stack structure with separate frontend and backend directories.
+The Roots Traditional e-commerce project has been successfully reorganized into a proper full-stack structure with separate frontend and backend directories.
 
 ## 📁 New Project Structure
 

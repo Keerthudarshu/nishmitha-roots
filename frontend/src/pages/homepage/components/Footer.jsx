@@ -78,7 +78,7 @@ const Footer = () => {
                   <Icon name="Leaf" size={20} color="white" />
                 </div>
                 <span className="font-heading font-bold text-xl text-foreground">
-                  Neenu's Natural
+                  Roots Traditional
                 </span>
               </Link>
               <p className="font-body text-muted-foreground mb-6 max-w-md">
@@ -190,7 +190,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             {/* Copyright */}
             <p className="font-caption text-sm text-muted-foreground text-center md:text-left">
-              © {currentYear} Neenu's Natural. All rights reserved. Made with ❤️ in India.
+              © {currentYear} Roots Traditional. All rights reserved. Made with ❤️ in India.
             </p>
 
             {/* Social Links */}

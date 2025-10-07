@@ -82,7 +82,7 @@ const CheckoutProcess = () => {
             price: 399.0,
             originalPrice: 450.0,
             category: "Sweets",
-            brand: "Neenu's Natural",
+            brand: "Roots Traditional",
             stock: 100,
             isActive: true
           },
@@ -92,7 +92,7 @@ const CheckoutProcess = () => {
             price: 280.0,
             originalPrice: 320.0,
             category: "Pickles",
-            brand: "Neenu's Natural",
+            brand: "Roots Traditional",
             stock: 50,
             isActive: true
           }

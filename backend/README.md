@@ -1,6 +1,6 @@
-# Neenu's Natural - Backend
+# Roots Traditional - Backend
 
-A Spring Boot REST API backend for Neenu's Natural organic products e-commerce platform.
+A Spring Boot REST API backend for Roots Traditional organic products e-commerce platform.
 
 ## 🚀 Features
 

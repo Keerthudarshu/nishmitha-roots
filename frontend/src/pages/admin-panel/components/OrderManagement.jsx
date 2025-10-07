@@ -89,7 +89,7 @@ const OrderManagement = () => {
     try {
       // Enhanced company settings
       const settings = {
-        siteName: "Neenu's Natural",
+        siteName: "Roots Traditional",
         companyAddress: "Natural & Organic Products Hub, Bangalore, India",
         companyPhone: "+91 7892783668",
         companyEmail: "info@neenusnatural.com"
@@ -141,7 +141,7 @@ const OrderManagement = () => {
     try {
       // Enhanced company settings
       const settings = {
-        siteName: "Neenu's Natural",
+        siteName: "Roots Traditional",
         companyAddress: "Natural & Organic Products Hub, Bangalore, India",
         companyPhone: "+91 7892783668",
         companyEmail: "info@neenusnatural.com"

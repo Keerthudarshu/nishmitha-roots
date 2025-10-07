@@ -1,6 +1,6 @@
 // Invoice generator utility
 export const generateInvoice = (order, user, settings = {}) => {
-  const siteName = settings.siteName || "Neenu's Natural";
+  const siteName = settings.siteName || "Roots Traditional";
   const currentDate = new Date().toLocaleDateString('en-IN');
   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN') : 'N/A';
   

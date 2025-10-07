@@ -1,6 +1,6 @@
-# Neenu's Natural - Frontend
+# Roots Traditional - Frontend
 
-A modern React-based e-commerce frontend application for Neenu's Natural organic products store.
+A modern React-based e-commerce frontend application for Roots Traditional organic products store.
 
 ## 🚀 Features
 
