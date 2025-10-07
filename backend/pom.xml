@@ -54,11 +54,37 @@
                 <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-		<!-- Cloudinary Java SDK for image uploads -->
+		<!-- Production-only dependencies (moved into the 'prod' profile below)
+		     Activate with -Pprod when building for production (Render/CICD).
+		     This avoids network dependency resolution during local development.
+		-->
+
+		<!-- If you need to compile classes that reference Cloudinary locally, add the SDK here or enable -Pprod -->
+		<!-- Uncomment the following during CI or local dev when you have network access -->
+		<!--
 		<dependency>
 			<groupId>com.cloudinary</groupId>
 			<artifactId>cloudinary-http44</artifactId>
-			<version>1.29.0</version>
+			<version>1.33.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.7</version>
+			<scope>runtime</scope>
+		</dependency>
+		-->
+		<!-- Add Cloudinary and PostgreSQL to main dependencies so service compiles when network is available -->
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.33.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.7</version>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>
@@ -71,5 +97,28 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- Production profile: includes cloudinary and postgres runtime dependencies -->
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.cloudinary</groupId>
+					<artifactId>cloudinary-http44</artifactId>
+					<version>1.33.0</version>
+				</dependency>
+				<dependency>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+					<version>42.7.7</version>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 </project>
