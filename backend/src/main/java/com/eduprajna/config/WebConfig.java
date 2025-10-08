@@ -24,9 +24,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedOrigins(
-                    "http://localhost:3000", 
+                    "http://localhost:3000",
                     "http://127.0.0.1:3000",
-                    "https://nishmitha-roots.vercel.app"
+                    "https://nishmitha-roots.vercel.app",
+                    // Production frontend domains
+                    "https://rootstraditional.in",
+                    "https://www.rootstraditional.in"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
