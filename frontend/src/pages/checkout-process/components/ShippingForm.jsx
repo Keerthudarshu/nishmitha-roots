@@ -91,7 +91,7 @@ const ShippingForm = ({ onNext, onAddressSelect, user, isLoading = false }) => {
            formData?.email?.trim() &&
            /\S+@\S+\.\S+/?.test(formData?.email) &&
            formData?.phone?.trim() &&
-           /^[+]?[91]?[6-9]\d{9}$/?.test(formData?.phone?.replace(/\s/g, '')) &&
+           /^(?:\+91|0)?[6-9]\d{9}$/.test(formData?.phone?.replace(/\s/g, '')) &&
            formData?.address?.trim() &&
            formData?.city?.trim() &&
            formData?.state &&
@@ -107,8 +107,8 @@ const ShippingForm = ({ onNext, onAddressSelect, user, isLoading = false }) => {
     if (!formData?.email?.trim()) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/?.test(formData?.email)) newErrors.email = 'Invalid email format';
     if (!formData?.phone?.trim()) newErrors.phone = 'Phone number is required';
-    else if (!/^[+]?[91]?[6-9]\d{9}$/?.test(formData?.phone?.replace(/\s/g, ''))) {
-      newErrors.phone = 'Invalid Indian phone number';
+    else if (!/^(?:\+91|0)?[6-9]\d{9}$/.test(formData?.phone?.replace(/\s/g, ''))) {
+      newErrors.phone = 'Invalid Indian phone number (allow +91 or leading 0)';
     }
     if (!formData?.address?.trim()) newErrors.address = 'Address is required';
     if (!formData?.city?.trim()) newErrors.city = 'City is required';

@@ -67,6 +67,8 @@ public class AuthController {
             String email = body.get("email");
             String password = body.get("password");
             String phone = body.get("phone");
+            // Normalize phone if provided
+            phone = normalizeIndianPhone(phone);
             String role = body.getOrDefault("role", "user");
 
             if (name == null || email == null || password == null) {
@@ -98,5 +100,26 @@ public class AuthController {
             logger.error("Error during registration for email: {}", body.get("email"), e);
             return ResponseEntity.status(500).body("Internal server error during registration");
         }
+
     }
-}
+
+    private static String normalizeIndianPhone(String input) {
+            if (input == null) return null;
+            String s = input.trim();
+            s = s.replaceAll("[\\s\\-()]+", "");
+            if (s.startsWith("+")) {
+                String digits = s.replaceAll("[^+0-9]", "");
+                if (digits.startsWith("+91") && digits.length() == 13) return digits;
+                String only = s.replaceAll("\\D", "");
+                if (only.length() == 12 && only.startsWith("91")) return "+" + only;
+                return null;
+            } else {
+                String only = s.replaceAll("\\D", "");
+                if (only.length() == 10) return only;
+                if (only.length() == 11 && only.startsWith("0")) return only.substring(1);
+                if (only.length() == 12 && only.startsWith("91")) return only.substring(2);
+                return null;
+            }
+        }
+
+    }

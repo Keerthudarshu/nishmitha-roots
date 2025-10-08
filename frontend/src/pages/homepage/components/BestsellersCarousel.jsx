@@ -320,22 +320,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
                           </h3>
                         </Link>
                         
-                        {/* Rating */}
-                        <div className="flex items-center space-x-1 mb-2">
-                          <div className="flex items-center">
-                            {[...Array(5)]?.map((_, i) => (
-                              <Icon
-                                key={i}
-                                name="Star"
-                                size={12}
-                                className={i < Math.floor(product?.rating) ? "text-warning fill-current" : "text-muted-foreground"}
-                              />
-                            ))}
-                          </div>
-                          <span className="font-caption text-xs text-muted-foreground">
-                            ({product?.reviewCount})
-                          </span>
-                        </div>
+                        {/* Rating removed from UI */}
 
                         {/* Weight */}
                         <p className="font-caption text-xs text-muted-foreground mb-2">

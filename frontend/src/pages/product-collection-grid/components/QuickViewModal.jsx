@@ -16,32 +16,7 @@ const QuickViewModal = ({ product, isOpen, onClose, onAddToCart }) => {
     return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
   };
 
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars?.push(
-        <Icon key={i} name="Star" size={16} className="text-warning fill-current" />
-      );
-    }
-
-    if (hasHalfStar) {
-      stars?.push(
-        <Icon key="half" name="StarHalf" size={16} className="text-warning fill-current" />
-      );
-    }
-
-    const emptyStars = 5 - Math.ceil(rating);
-    for (let i = 0; i < emptyStars; i++) {
-      stars?.push(
-        <Icon key={`empty-${i}`} name="Star" size={16} className="text-muted-foreground" />
-      );
-    }
-
-    return stars;
-  };
+  // ...existing code...
 
   const currentPrice = selectedVariant?.salePrice || product?.salePrice;
   const originalPrice = selectedVariant?.originalPrice || product?.originalPrice;
@@ -120,14 +95,7 @@ const QuickViewModal = ({ product, isOpen, onClose, onAddToCart }) => {
                     {product?.name}
                   </h1>
                   
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1">
-                      {renderStars(product?.rating)}
-                    </div>
-                    <span className="font-caption text-sm text-muted-foreground">
-                      ({product?.reviewCount} reviews)
-                    </span>
-                  </div>
+                  {/* Rating removed from UI */}
                 </div>
 
                 {/* Badges */}

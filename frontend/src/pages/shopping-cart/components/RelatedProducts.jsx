@@ -197,22 +197,7 @@ const RelatedProducts = ({ onAddToCart }) => {
                     {product?.variant}
                   </p>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center">
-                      {[...Array(5)]?.map((_, i) => (
-                        <Icon
-                          key={i}
-                          name="Star"
-                          size={12}
-                          className={i < Math.floor(product?.rating) ? 'text-warning fill-current' : 'text-muted-foreground'}
-                        />
-                      ))}
-                    </div>
-                    <span className="font-caption text-xs text-muted-foreground">
-                      {product?.rating} ({product?.reviews})
-                    </span>
-                  </div>
+                  {/* Rating removed from UI */}
 
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-3">

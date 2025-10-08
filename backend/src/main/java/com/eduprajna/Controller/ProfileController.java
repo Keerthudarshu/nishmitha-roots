@@ -1,14 +1,23 @@
 package com.eduprajna.Controller;
 
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.eduprajna.dto.PasswordUpdateRequest;
 import com.eduprajna.dto.ProfileDTO;
 import com.eduprajna.entity.User;
 import com.eduprajna.service.UserService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -45,7 +54,10 @@ public class ProfileController {
             }
             
             if (profileData.containsKey("phone") && profileData.get("phone") != null) {
-                user.setPhone(profileData.get("phone").toString());
+                String rawPhone = profileData.get("phone").toString();
+                String normalized = normalizeIndianPhone(rawPhone);
+                if (normalized != null) user.setPhone(normalized);
+                else user.setPhone(rawPhone);
             }
             
             if (profileData.containsKey("dateOfBirth") && profileData.get("dateOfBirth") != null) {
@@ -75,6 +87,30 @@ public class ProfileController {
             
         } catch (Exception e) {
             return ResponseEntity.status(400).body(Map.of("message", "Invalid profile data: " + e.getMessage()));
+        }
+    }
+
+    // Normalize Indian phone numbers. Accepts formats like 7892783668, 07892783668, +917892783668
+    // Returns normalized string: +91xxxxxxxxxx if input has country code, or 10-digit string otherwise.
+    private String normalizeIndianPhone(String input) {
+        if (input == null) return null;
+        String s = input.trim();
+        // Remove spaces, dashes, parentheses
+        s = s.replaceAll("[\\s\\-()]+", "");
+        if (s.startsWith("+")) {
+            // keep + and digits only
+            String digits = s.replaceAll("[^+0-9]", "");
+            if (digits.startsWith("+91") && digits.length() == 13) return digits;
+            // fallback: strip non-digits
+            String only = s.replaceAll("\\D", "");
+            if (only.length() == 12 && only.startsWith("91")) return "+" + only;
+            return null;
+        } else {
+            String only = s.replaceAll("\\D", "");
+            if (only.length() == 10) return only;
+            if (only.length() == 11 && only.startsWith("0")) return only.substring(1);
+            if (only.length() == 12 && only.startsWith("91")) return only.substring(2);
+            return null;
         }
     }
 

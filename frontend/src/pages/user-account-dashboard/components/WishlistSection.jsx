@@ -199,27 +199,7 @@ const WishlistSection = ({ wishlistItems, onRemoveFromWishlist, onAddToCart }) =
                   )}
                 </div>
 
-                {/* Rating */}
-                {item?.rating && (
-                  <div className="flex items-center space-x-1 mb-3">
-                    <div className="flex items-center">
-                      {[...Array(5)]?.map((_, i) => (
-                        <Icon
-                          key={i}
-                          name="Star"
-                          size={12}
-                          className={`${
-                            i < Math.floor(item?.rating)
-                              ? 'text-warning fill-current' :'text-muted-foreground'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="font-caption text-xs text-muted-foreground">
-                      ({item?.reviewCount})
-                    </span>
-                  </div>
-                )}
+                {/* Rating removed from UI */}
 
                 {/* Added Date */}
                 <p className="font-caption text-xs text-muted-foreground mb-3">
