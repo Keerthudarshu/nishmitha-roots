@@ -4,7 +4,6 @@ import Header from '../../components/ui/Header';
 import HeroSection from './components/HeroSection';
 import CategoryTiles from './components/CategoryTiles';
 import BestsellersCarousel from './components/BestsellersCarousel';
-import NewsletterSection from './components/NewsletterSection';
 import Footer from './components/Footer';
 
 import { useCart } from '../../contexts/CartContext';
@@ -98,8 +97,7 @@ const Homepage = () => {
           {/* Bestsellers Carousel */}
           <BestsellersCarousel onAddToCart={handleAddToCart} />
 
-          {/* Newsletter Section */}
-          <NewsletterSection />
+          {/* Newsletter Section removed per request */}
         </main>
 
         {/* Footer */}
