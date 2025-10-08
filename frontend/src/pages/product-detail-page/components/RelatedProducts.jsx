@@ -26,11 +26,11 @@ const RelatedProducts = ({ products, onAddToCart }) => {
           View All
         </Link>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {products?.map((product) => (
           <div key={product?.id} className="group">
             <div className="bg-muted/50 rounded-lg border border-border hover:shadow-warm-md transition-all duration-300">
-              {/* Product Image */}
               <div className="relative aspect-square rounded-t-lg overflow-hidden">
                 <Link to={`/product-detail-page?id=${product?.id}`}>
                   <Image
@@ -39,8 +39,7 @@ const RelatedProducts = ({ products, onAddToCart }) => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </Link>
-                
-                {/* Quick Actions */}
+
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <button
                     className="w-8 h-8 bg-background/80 hover:bg-background rounded-full flex items-center justify-center shadow-warm"
@@ -50,7 +49,6 @@ const RelatedProducts = ({ products, onAddToCart }) => {
                   </button>
                 </div>
 
-                {/* Badges */}
                 {product?.badges && product?.badges?.length > 0 && (
                   <div className="absolute top-2 left-2">
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-caption font-medium bg-accent/90 text-white">
@@ -60,7 +58,6 @@ const RelatedProducts = ({ products, onAddToCart }) => {
                 )}
               </div>
 
-              {/* Product Info */}
               <div className="p-4 space-y-3">
                 <div>
                   <Link to={`/product-detail-page?id=${product?.id}`}>
@@ -73,7 +70,6 @@ const RelatedProducts = ({ products, onAddToCart }) => {
                   </p>
                 </div>
 
-                {/* Pricing */}
                 <div className="flex items-center gap-2">
                   <span className="font-data font-semibold text-foreground">
                     ₹{product?.variants?.[0]?.price?.toFixed(2)}
@@ -85,27 +81,6 @@ const RelatedProducts = ({ products, onAddToCart }) => {
                   )}
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-2">
-                  <div className="flex">
-                    {Array.from({ length: 5 }, (_, index) => (
-                      <Icon
-                        key={index}
-                        name="Star"
-                        size={12}
-                        className={`${
-                          index < Math.round(product?.rating)
-                            ? 'text-warning fill-current' :'text-muted-foreground'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="font-caption text-xs text-muted-foreground">
-                    ({product?.reviewCount})
-                  </span>
-                </div>
-
-                {/* Add to Cart Button */}
                 <Button
                   variant="outline"
                   size="sm"

@@ -77,8 +77,8 @@ const ProfileManagement = ({ user, onUpdateProfile }) => {
     
     if (!formData?.phone?.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (!/^\d{10}$/?.test(formData?.phone?.replace(/\D/g, ''))) {
-      newErrors.phone = 'Please enter a valid 10-digit phone number';
+    } else if (!/^(?:\+91|0)?[6-9]\d{9}$/.test(formData?.phone?.replace(/\s|[-()]/g, ''))) {
+      newErrors.phone = 'Please enter a valid Indian phone number (10 digits, optional +91 or leading 0)';
     }
 
     setErrors(newErrors);
