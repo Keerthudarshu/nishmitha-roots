@@ -13,30 +13,8 @@ const Homepage = () => {
   const { addToCart, getCartItemCount, cartItems } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock cart data for demonstration
-  useEffect(() => {
-    const mockCartItems = [
-      {
-        id: 1,
-        name: "Traditional Mysore Pak",
-        price: 399,
-        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&h=400&fit=crop",
-        variant: "250g",
-        quantity: 2
-      },
-      {
-        id: 2,
-        name: "Homemade Mango Pickle",
-        price: 280,
-        image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop",
-        variant: "500g",
-        quantity: 1
-      }
-    ];
-    // The original code had setCartItems(mockCartItems) here which would be incorrect if CartContext doesn't manage initial state this way.
-    // Assuming addToCart handles adding items and the context maintains the state.
-    // If initial cart state is needed, it should be handled within CartContext.
-  }, []);
+  // Remove mock cart data - let CartContext handle initial state
+  // useEffect with empty dependency array was causing unnecessary rerenders
 
   const handleAddToCart = (product) => {
     const cartItem = {

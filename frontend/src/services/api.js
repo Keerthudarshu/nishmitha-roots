@@ -5,7 +5,7 @@ const baseURL = import.meta.env?.VITE_API_BASE_URL || 'https://nishmitha-roots-7
 
 export const apiClient = axios.create({
   baseURL,
-  timeout: 20000,
+  timeout: 8000, // Reduced from 20000ms to 8000ms (8 seconds)
   headers: {
     'Content-Type': 'application/json'
   }
