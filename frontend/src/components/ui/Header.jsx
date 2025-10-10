@@ -97,12 +97,6 @@ const Header = ({ onSearch = () => {} }) => {
   };
 
   const navigationItems = [
-    {
-      label: '',
-      path: '/product-collection-grid',
-      hasDropdown: true,
-      onClick: () => setIsMegaMenuOpen(!isMegaMenuOpen)
-    },
     { label: 'Products', path: '/product-collection-grid' },
     { label: 'Account', path: '/user-account-dashboard' },
   ];
@@ -279,9 +273,9 @@ const Header = ({ onSearch = () => {} }) => {
       </div>
       
       {/* Green Navigation Layer */}
-      <div className="bg-accent text-accent-foreground">
+      <div className="bg-accent text-accent-foreground py-3">
         <div className="container mx-auto px-4">
-          <div className="flex items-center">
+          <div className="flex items-center py-1">
             {/* Navigation Items */}
             <nav className="hidden lg:flex items-center ml-8 space-x-6">
               {navigationItems?.map((item, index) => (

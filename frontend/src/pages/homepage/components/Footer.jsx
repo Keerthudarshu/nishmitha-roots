@@ -39,8 +39,8 @@ const Footer = () => {
   ];
 
   const contactInfo = {
-    phone: "+91 80 4567 8901",
-    whatsapp: "+91 98765 43210",
+    phone: "9845651468",
+    whatsapp: "+91 9845651468",
     email: "hello@neenusnatural.com",
     address: "123 MG Road, Bengaluru, Karnataka 560001"
   };
