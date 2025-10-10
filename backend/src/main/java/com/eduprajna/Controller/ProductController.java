@@ -2,10 +2,12 @@ package com.eduprajna.Controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +43,19 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<Product>> getAll() {
-        return ResponseEntity.ok(productService.getAll());
+        List<Product> products = productService.getAll();
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.SECONDS).cachePublic())
+                .body(products);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
         Product p = productService.getById(id);
         if (p == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(p);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.SECONDS).cachePublic())
+                .body(p);
     }
 
     @PostMapping(consumes = {"multipart/form-data"})

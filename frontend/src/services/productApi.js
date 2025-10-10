@@ -1,12 +1,19 @@
 import apiClient from './api';
+import cache from './simpleCache';
 
 const productApi = {
   async getAll(params = {}) {
     try {
-      console.log('ProductAPI: Fetching all products with params:', params);
-      const res = await apiClient.get('/admin/products', { params });
-      console.log('ProductAPI: Successfully fetched products:', res.data?.length || 0);
-      return res.data;
+      const cacheKey = `products:${JSON.stringify(params)}`;
+      const { cached, fresh } = cache.staleWhileRevalidate(cacheKey, async () => {
+  console.log('ProductAPI: Fetching all products with params:', params);
+  const res = await import('./api').then(m => m.getWithRetry('/admin/products', { params }));
+        console.log('ProductAPI: Successfully fetched products:', res.data?.length || 0);
+        return res.data;
+      }, 30 * 1000, true);
+
+      if (cached) return cached;
+      return await fresh;
     } catch (error) {
       console.error('ProductAPI: Failed to fetch products:', {
         message: error.message,
@@ -30,10 +37,16 @@ const productApi = {
         throw new Error('Product ID is required');
       }
       
-      console.log('ProductAPI: Fetching product by ID:', productId);
-      const res = await apiClient.get(`/admin/products/${productId}`);
-      console.log('ProductAPI: Successfully fetched product:', res.data?.name || res.data?.id);
-      return res.data;
+      const cacheKey = `product:${productId}`;
+      const { cached, fresh } = cache.staleWhileRevalidate(cacheKey, async () => {
+  console.log('ProductAPI: Fetching product by ID:', productId);
+  const res = await import('./api').then(m => m.getWithRetry(`/admin/products/${productId}`));
+        console.log('ProductAPI: Successfully fetched product:', res.data?.name || res.data?.id);
+        return res.data;
+      }, 30 * 1000, true);
+
+      if (cached) return cached;
+      return await fresh;
     } catch (error) {
       console.error('ProductAPI: Failed to fetch product by ID:', productId, {
         message: error.message,

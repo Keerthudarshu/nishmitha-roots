@@ -1,15 +1,20 @@
 package com.eduprajna.Controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.eduprajna.entity.User;
-import com.eduprajna.service.UserService;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.eduprajna.entity.User;
+import com.eduprajna.service.UserService;
 
 /**
  * Development controller for seeding the database with sample data
@@ -52,7 +57,7 @@ public class DevController {
             admin.setEmail("admin@gmail.com");
             admin.setName("Admin");
             admin.setPasswordHash("Admin@123"); // In production, this should be hashed
-            admin.setPhone("8197277941");
+            admin.setPhone("9845651468");
             admin.setRole("admin");
             admin.setIsActive(true);
             admin.setLoyaltyPoints(0);
@@ -67,7 +72,7 @@ public class DevController {
             testUser.setEmail("nishu@gmail.com");
             testUser.setName("SS");
             testUser.setPasswordHash("Nishu@123"); // In production, this should be hashed
-            testUser.setPhone("8197277941");
+            testUser.setPhone("9845651468");
             testUser.setRole("user");
             testUser.setGender("Female");
             testUser.setDateOfBirth(LocalDate.of(2001, 7, 18));

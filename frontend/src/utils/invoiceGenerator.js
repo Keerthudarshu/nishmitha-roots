@@ -209,7 +209,7 @@ export const generateInvoice = (order, user, settings = {}) => {
                 </div>
                 <p>Natural & Organic Products</p>
                 <p>Email: info@neenusnatural.com</p>
-                <p>Phone: +91 7892783668</p>
+                <p>Phone: +91 9845651468</p>
             </div>
             <div class="invoice-info">
                 <h2>INVOICE</h2>
@@ -297,7 +297,7 @@ export const generateInvoice = (order, user, settings = {}) => {
 
         <div class="footer">
             <p>Thank you for shopping with ${siteName}!</p>
-            <p>For any queries, contact us at info@neenusnatural.com or +91 7892783668</p>
+            <p>For any queries, contact us at info@neenusnatural.com or +91 9845651468</p>
             <p><em>This is a computer-generated invoice and does not require a signature.</em></p>
         </div>
     </div>

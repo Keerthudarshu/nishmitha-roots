@@ -1,5 +1,5 @@
 export const sendOrderToWhatsApp = (orderData) => {
-  const phoneNumber = "918197277941"; // WhatsApp number
+  const phoneNumber = "919845651468"; // WhatsApp number
   
   const formatOrderMessage = (order) => {
     const {
@@ -57,7 +57,7 @@ export const sendOrderToWhatsApp = (orderData) => {
 };
 
 // New, more flexible helper used by checkout flow
-export const sendOrderDetailsToWhatsApp = async (order, reviewData, user, location, phoneNumber = '917892783668') => {
+export const sendOrderDetailsToWhatsApp = async (order, reviewData, user, location, phoneNumber = '919845651468') => {
   try {
     const customerName = user?.name || reviewData?.address?.name || 'Unknown Customer';
     const customerPhone = reviewData?.address?.phone || user?.phone || 'Not provided';

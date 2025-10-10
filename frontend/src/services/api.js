@@ -5,7 +5,7 @@ const baseURL = import.meta.env?.VITE_API_BASE_URL || 'https://nishmitha-roots-7
 
 export const apiClient = axios.create({
   baseURL,
-  timeout: 20000,
+  timeout: 12000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -82,5 +82,23 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
+
+// Lightweight retry for GET requests: attempts up to 2 retries with small backoff
+export async function getWithRetry(url, config = {}, retries = 2) {
+  let attempt = 0;
+  const backoff = (n) => new Promise(r => setTimeout(r, Math.min(500 * n, 2000)));
+  while (true) {
+    try {
+      const res = await apiClient.get(url, config);
+      return res;
+    } catch (err) {
+      attempt++;
+      const status = err?.response?.status;
+      // Retry on network errors or 5xx
+      if (attempt > retries || (status && status < 500)) throw err;
+      await backoff(attempt);
+    }
+  }
+}
 
 

@@ -22,6 +22,8 @@ const QuickViewModal = ({ product, isOpen, onClose, onAddToCart }) => {
   const originalPrice = selectedVariant?.originalPrice || product?.originalPrice;
   const savings = calculateSavings(originalPrice, currentPrice);
 
+  const availableStock = selectedVariant?.stock ?? product?.stockQuantity ?? null;
+
   const productImages = product?.gallery || [product?.image];
 
   const handleAddToCart = () => {
@@ -131,7 +133,7 @@ const QuickViewModal = ({ product, isOpen, onClose, onAddToCart }) => {
                   </div>
                   {savings > 0 && (
                     <p className="font-caption text-success">
-                      You save ₹{originalPrice - currentPrice}
+                      You save ₹{((parseFloat(originalPrice) || 0) - (parseFloat(currentPrice) || 0)).toFixed(2)}
                     </p>
                   )}
                 </div>
@@ -169,6 +171,7 @@ const QuickViewModal = ({ product, isOpen, onClose, onAddToCart }) => {
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors duration-200"
+                      disabled={quantity <= 1}
                     >
                       <Icon name="Minus" size={16} />
                     </button>
@@ -176,8 +179,9 @@ const QuickViewModal = ({ product, isOpen, onClose, onAddToCart }) => {
                       {quantity}
                     </span>
                     <button
-                      onClick={() => setQuantity(quantity + 1)}
+                      onClick={() => setQuantity(Math.min((availableStock ?? Infinity), quantity + 1))}
                       className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors duration-200"
+                      disabled={availableStock !== null && quantity >= availableStock}
                     >
                       <Icon name="Plus" size={16} />
                     </button>
