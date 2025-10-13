@@ -51,7 +51,7 @@ const HeroSection = () => {
                   {heroData?.ctaText}
                 </Button>
               </Link>
-              <Link to="/product-collection-grid?filter=bestsellers">
+              <Link to="/product-collection-grid?filter=Bestsellers">
                 <Button 
                   variant="outline" 
                   size="lg"

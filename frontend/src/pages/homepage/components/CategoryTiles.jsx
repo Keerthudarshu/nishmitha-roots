@@ -73,7 +73,22 @@ const CategoryTiles = () => {
           };
         });
         
-        setCategories(processedCategories);
+        // Build a set of category ids/names that appear in the products list
+        const productCategorySet = new Set();
+        products.forEach(p => {
+          const catKey = p?.category || p?.categoryId || p?.category_name || p?.categoryName;
+          if (catKey) productCategorySet.add(String(catKey).toLowerCase());
+        });
+
+        // Filter processed categories to only those that exist in products
+        const filtered = processedCategories.filter(cat => {
+          if (!cat || !cat.id) return false;
+          const idLower = String(cat.id).toLowerCase();
+          const nameLower = String(cat.name || '').toLowerCase();
+          return productCategorySet.has(idLower) || productCategorySet.has(nameLower);
+        });
+
+        setCategories(filtered);
         console.log('Successfully loaded categories:', processedCategories.length);
         
       } catch (err) {
@@ -142,14 +157,15 @@ const CategoryTiles = () => {
           </p>
         </div>
 
-        {/* Category Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 lg:gap-6">
-          {categories?.map((category) => (
-            <Link
-              key={category?.id}
-              to={category?.link}
-              className="group relative bg-card border border-border rounded-xl overflow-hidden hover:shadow-warm-lg transition-all duration-300 hover:-translate-y-1"
-            >
+        {/* Category Row (single horizontal scrollable row) */}
+        <div className="overflow-x-auto -mx-4 px-4">
+          <div className="flex space-x-4 lg:space-x-6 py-2">
+            {categories?.map((category) => (
+              <Link
+                key={category?.id}
+                to={category?.link}
+                className="group relative bg-card border border-border rounded-xl overflow-hidden hover:shadow-warm-lg transition-all duration-300 hover:-translate-y-1 flex-shrink-0 w-40 sm:w-48 md:w-56"
+              >
               {/* Category Image */}
               <div className="aspect-square overflow-hidden">
                 <Image
@@ -203,8 +219,9 @@ const CategoryTiles = () => {
                   <Icon name="ArrowRight" size={20} color="white" />
                 </div>
               </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* View All Categories */}

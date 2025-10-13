@@ -328,17 +328,17 @@ const dataService = {
     }
   },
 
-  // Get bestsellers from backend API
+  // Get Bestsellers from backend API
   async getBestsellers(limit = 6) {
     try {
-      console.log('Fetching bestsellers from backend API...');
+      console.log('Fetching Bestsellers from backend API...');
       const products = await productApi.getAll({ bestseller: true, limit });
-      const bestsellers = Array.isArray(products) ? products.slice(0, limit) : [];
-      console.log('Successfully loaded bestsellers from API:', bestsellers.length);
+      const Bestsellers = Array.isArray(products) ? products.slice(0, limit) : [];
+      console.log('Successfully loaded Bestsellers from API:', Bestsellers.length);
       
-      return { data: bestsellers };
+      return { data: Bestsellers };
     } catch (error) {
-      console.error('Error fetching bestsellers from API:', error);
+      console.error('Error fetching Bestsellers from API:', error);
       return { data: [] };
     }
   },

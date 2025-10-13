@@ -9,7 +9,7 @@ import apiClient from '../../../services/api';
 
 const BestsellersCarousel = ({ onAddToCart }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [bestsellers, setBestsellers] = useState([]);
+  const [Bestsellers, setBestsellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -48,16 +48,16 @@ const BestsellersCarousel = ({ onAddToCart }) => {
         
         let bestsellerProducts = [];
         
-        // Try to get bestsellers from backend API
+        // Try to get Bestsellers from backend API
         try {
           const productsRes = await productApi.getAll();
           const allProducts = Array.isArray(productsRes) ? productsRes : (productsRes?.data || []);
           
-          // Filter for bestsellers or top-rated products
+          // Filter for Bestsellers or top-rated products
           bestsellerProducts = allProducts
             .filter(product => product.featured || product.bestseller || product.rating >= 4.5)
             .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-            .slice(0, 8); // Limit to 8 bestsellers
+            .slice(0, 8); // Limit to 8 Bestsellers
             
           if (bestsellerProducts.length === 0) {
             // Fallback: Take top products by rating
@@ -95,10 +95,10 @@ const BestsellersCarousel = ({ onAddToCart }) => {
         }));
         
         setBestsellers(normalizedProducts);
-        console.log('Successfully loaded bestsellers:', normalizedProducts.length);
+        console.log('Successfully loaded Bestsellers:', normalizedProducts.length);
         
       } catch (err) {
-        console.error('Error loading bestsellers:', err);
+        console.error('Error loading Bestsellers:', err);
         setError('Failed to load bestselling products');
         setBestsellers([]);
       } finally {
@@ -115,7 +115,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
     desktop: 4
   };
 
-  const totalSlides = Math.max(1, Math.ceil(bestsellers?.length / itemsPerSlide?.desktop));
+  const totalSlides = Math.max(1, Math.ceil(Bestsellers?.length / itemsPerSlide?.desktop));
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -150,7 +150,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="font-heading font-bold text-3xl lg:text-4xl text-foreground mb-2">
-              Bestsellers
+              Best Products
             </h2>
             <p className="font-body text-muted-foreground">
               Loading our most loved products...
@@ -196,7 +196,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
     );
   }
 
-  if (bestsellers.length === 0) {
+  if (Bestsellers.length === 0) {
     return (
       <section className="py-16 lg:py-20 bg-muted/30">
         <div className="container mx-auto px-4">
@@ -264,7 +264,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
                 className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6"
                 style={{ width: `${100 / totalSlides}%` }}
               >
-                {bestsellers?.slice(slideIndex * itemsPerSlide?.desktop, (slideIndex + 1) * itemsPerSlide?.desktop)?.map((product) => (
+                {Bestsellers?.slice(slideIndex * itemsPerSlide?.desktop, (slideIndex + 1) * itemsPerSlide?.desktop)?.map((product) => (
                     <div
                       key={product?.id}
                       className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-warm-lg transition-all duration-300 hover:-translate-y-1 h-full flex flex-col"
@@ -386,7 +386,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
 
         {/* View All Link */}
         <div className="text-center mt-8">
-          <Link to="/product-collection-grid?filter=bestsellers">
+          <Link to="/product-collection-grid?filter=Bestsellers">
             <Button variant="outline" iconName="ArrowRight" iconPosition="right">
               View All Bestsellers
             </Button>

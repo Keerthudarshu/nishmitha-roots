@@ -33,10 +33,9 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { name: "Facebook", icon: "Facebook", url: "https://facebook.com/neenusnatural" },
-    { name: "Instagram", icon: "Instagram", url: "https://instagram.com/neenusnatural" },
-    { name: "Twitter", icon: "Twitter", url: "https://twitter.com/neenusnatural" },
-    { name: "YouTube", icon: "Youtube", url: "https://youtube.com/neenusnatural" }
+    { name: "Facebook", icon: "Facebook", url: "https://www.facebook.com/profile.php?id=61581179697955" },
+    { name: "Instagram", icon: "Instagram", url: "https://www.instagram.com/root_straditional/" },
+    { name: "YouTube", icon: "Youtube", url: "https://www.youtube.com/@rootstraditionalfoods" }
   ];
 
   const contactInfo = {
