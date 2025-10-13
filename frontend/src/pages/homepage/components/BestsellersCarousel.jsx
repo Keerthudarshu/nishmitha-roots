@@ -181,7 +181,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
           <div className="text-center">
             <Icon name="AlertCircle" size={48} className="text-destructive mx-auto mb-4" />
             <h3 className="font-heading font-semibold text-xl text-foreground mb-2">
-              Unable to Load Bestsellers
+              Unable to Load Best Products
             </h3>
             <p className="font-body text-muted-foreground mb-4">{error}</p>
             <button 
@@ -203,10 +203,10 @@ const BestsellersCarousel = ({ onAddToCart }) => {
           <div className="text-center">
             <Icon name="Package" size={48} className="text-muted-foreground mx-auto mb-4" />
             <h3 className="font-heading font-semibold text-xl text-foreground mb-2">
-              No Bestsellers Available
+              No Best Products Available
             </h3>
             <p className="font-body text-muted-foreground">
-              Bestselling products will appear here once we have sales data.
+              Best products will appear here once we have sales data.
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="font-heading font-bold text-3xl lg:text-4xl text-foreground mb-2">
-              Bestsellers
+              Best Products
             </h2>
             <p className="font-body text-muted-foreground">
               Most loved products by our customers
@@ -388,7 +388,7 @@ const BestsellersCarousel = ({ onAddToCart }) => {
         <div className="text-center mt-8">
           <Link to="/product-collection-grid?filter=Bestsellers">
             <Button variant="outline" iconName="ArrowRight" iconPosition="right">
-              View All Bestsellers
+              View All Best Products
             </Button>
           </Link>
         </div>
