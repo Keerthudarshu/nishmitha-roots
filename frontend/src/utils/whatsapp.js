@@ -49,11 +49,53 @@ export const sendOrderToWhatsApp = (orderData) => {
   
   const message = formatOrderMessage(orderData);
   const encodedMessage = encodeURIComponent(message);
-  // Prefer api.whatsapp.com as it reliably carries the prefilled text across desktop/mobile
-  const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber.replace(/[^0-9]/g, '')}&text=${encodedMessage}`;
-  
-  // Open WhatsApp in new tab
-  window.open(whatsappUrl, '_blank');
+  const phone = phoneNumber.replace(/[^0-9]/g, '');
+
+  // Build possible URLs (native app, api web endpoint, wa.me)
+  const nativeUrl = `whatsapp://send?phone=${phone}&text=${encodedMessage}`;
+  const apiUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`;
+  const waMeUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+
+  // helper to open a URL via a clicked anchor (more reliable for prefilled text in some browsers)
+  const openViaAnchor = (url, target = '_blank') => {
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = target;
+      a.rel = 'noopener noreferrer';
+      // Some browsers (esp. mobile) preserve query params better when navigation comes from a user-initiated click
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { try { document.body.removeChild(a); } catch (e) {} }, 1000);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  try {
+    if (isMobile) {
+      // Try native first on mobile devices; if it fails the browser will stay on page so we fallback shortly after
+      openViaAnchor(nativeUrl, '_self');
+      // Fallback to api web URL after a short delay
+      setTimeout(() => openViaAnchor(apiUrl, '_blank') || openViaAnchor(waMeUrl, '_blank'), 700);
+    } else {
+      // Desktop: open api.whatsapp which generally preserves prefilled text
+      if (!openViaAnchor(apiUrl, '_blank')) {
+        // final fallback
+        openViaAnchor(waMeUrl, '_blank');
+      }
+    }
+  } catch (err) {
+    // As a last resort use window.location to force navigation
+    try {
+      window.location.href = apiUrl;
+    } catch (e) {
+      console.error('Failed to open WhatsApp link', e);
+    }
+  }
 };
 
 // New, more flexible helper used by checkout flow
@@ -109,9 +151,40 @@ export const sendOrderDetailsToWhatsApp = async (order, reviewData, user, locati
     const phone = (phoneNumber || '').toString().replace(/[^0-9]/g, '');
     const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`;
 
-    const win = window.open(url, '_blank');
-    if (!win) {
-      throw new Error('Please allow popups to send order details to WhatsApp.');
+    // Try a multi-strategy open so prefilled text survives across mobile/desktop
+    const nativeUrl = `whatsapp://send?phone=${phone}&text=${encodedMessage}`;
+    const apiUrl = url; // already api.whatsapp.com url
+    const waMeUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    const openViaAnchor = (link, target = '_blank') => {
+      try {
+        const a = document.createElement('a');
+        a.href = link;
+        a.target = target;
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { try { document.body.removeChild(a); } catch (e) {} }, 1000);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    if (isMobile) {
+      // try native then fallback to api
+      openViaAnchor(nativeUrl, '_self');
+      setTimeout(() => {
+        if (!openViaAnchor(apiUrl, '_blank')) openViaAnchor(waMeUrl, '_blank');
+      }, 700);
+    } else {
+      if (!openViaAnchor(apiUrl, '_blank')) {
+        if (!openViaAnchor(waMeUrl, '_blank')) {
+          throw new Error('Please allow popups to send order details to WhatsApp.');
+        }
+      }
     }
   } catch (err) {
     console.error('Failed to send WhatsApp message:', err);
