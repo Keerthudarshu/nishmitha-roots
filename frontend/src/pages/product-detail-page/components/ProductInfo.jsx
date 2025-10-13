@@ -13,7 +13,11 @@ const ProductInfo = ({ product, onAddToCart, onAddToWishlist, isInWishlist }) =>
 
   const handleVariantChange = (variantId) => {
     const variant = product?.variants?.find(v => v?.id === variantId);
-    setSelectedVariant(variant);
+    if (variant) {
+      setSelectedVariant(variant);
+      // Reset quantity when variant changes to avoid accidentally adding wrong counts
+      setQuantity(1);
+    }
   };
 
   const handleQuantityChange = (change) => {
@@ -41,8 +45,8 @@ const ProductInfo = ({ product, onAddToCart, onAddToWishlist, isInWishlist }) =>
       id: product?.id,
       productId: product?.id,
       name: product?.name,
-      price: selectedVariant?.price ?? product?.variants?.[0]?.price ?? 0,
-      originalPrice: selectedVariant?.originalPrice ?? product?.variants?.[0]?.originalPrice ?? selectedVariant?.price ?? product?.variants?.[0]?.price ?? 0,
+      price: parseFloat(selectedVariant?.price ?? product?.variants?.[0]?.price ?? 0) || 0,
+      originalPrice: parseFloat(selectedVariant?.originalPrice ?? product?.variants?.[0]?.originalPrice ?? selectedVariant?.price ?? product?.variants?.[0]?.price ?? 0) || 0,
       image: product?.images?.[0] || product?.imageUrl || product?.image,
       stockQuantity: availableStock,
       variantId: selectedVariant?.id,
@@ -51,8 +55,14 @@ const ProductInfo = ({ product, onAddToCart, onAddToWishlist, isInWishlist }) =>
   };
 
   const discountPercentage = Math.round(
-    ((selectedVariant?.originalPrice - selectedVariant?.price) / selectedVariant?.originalPrice) * 100
+    selectedVariant?.originalPrice
+      ? ((selectedVariant?.originalPrice - selectedVariant?.price) / selectedVariant?.originalPrice) * 100
+      : 0
   );
+
+  // Numeric prices
+  const unitPrice = parseFloat(selectedVariant?.price) || 0;
+  const totalPrice = unitPrice * (parseInt(quantity) || 1);
 
   const variantOptions = product?.variants?.map(variant => ({
     value: variant?.id,
@@ -90,18 +100,18 @@ const ProductInfo = ({ product, onAddToCart, onAddToWishlist, isInWishlist }) =>
         ))}
       </div>
       {/* Pricing */}
-      <div className="space-y-2">
+        <div className="space-y-2">
         <div className="flex items-center gap-3">
           <span className="font-heading font-bold text-2xl text-foreground">
-            ₹{selectedVariant?.price?.toFixed(2)}
+            ₹{unitPrice.toFixed(2)}
           </span>
           {selectedVariant?.originalPrice > selectedVariant?.price && (
             <>
               <span className="font-data text-lg text-muted-foreground line-through">
-                ₹{selectedVariant?.originalPrice?.toFixed(2)}
+                ₹{(parseFloat(selectedVariant?.originalPrice) || 0).toFixed(2)}
               </span>
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-caption font-medium bg-success/10 text-success">
-                Save {discountPercentage}%
+                Save {Math.round(discountPercentage)}%
               </span>
             </>
           )}
@@ -109,6 +119,12 @@ const ProductInfo = ({ product, onAddToCart, onAddToWishlist, isInWishlist }) =>
         <p className="font-caption text-sm text-muted-foreground">
           Inclusive of all taxes
         </p>
+
+        {quantity > 1 && (
+          <p className="font-heading font-semibold text-lg text-foreground">
+            Total: ₹{totalPrice.toFixed(2)}
+          </p>
+        )}
       </div>
       {/* Variant Selection */}
       <div>
@@ -154,7 +170,7 @@ const ProductInfo = ({ product, onAddToCart, onAddToWishlist, isInWishlist }) =>
             className="flex-1"
             disabled={!inStock}
           >
-            Add to Cart
+            {`Add to Cart - ₹${((parseFloat(selectedVariant?.price) || 0) * (quantity || 1)).toFixed(2)}`}
           </Button>
           <Button
             variant="outline"

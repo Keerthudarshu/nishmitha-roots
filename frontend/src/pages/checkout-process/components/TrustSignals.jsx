@@ -112,7 +112,7 @@ const TrustSignals = () => {
                 WhatsApp
               </p>
               <p className="font-data text-xs text-muted-foreground">
-                +91 98765 43210
+                +91 9845651468
               </p>
             </div>
           </div>

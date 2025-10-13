@@ -193,10 +193,10 @@ const ProductCard = ({
             {savings > 0 && (
               <div className="flex items-center justify-between">
                 <span className="font-caption text-xs font-medium text-success bg-success/10 px-2 py-0.5 rounded-full">
-                  {Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}% OFF
+                  {originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0}% OFF
                 </span>
                 <p className="font-caption text-xs text-success font-medium">
-                  You save ₹{(originalPrice - currentPrice)?.toFixed(2)}
+                  You save ₹{((parseFloat(originalPrice) || 0) - (parseFloat(currentPrice) || 0)).toFixed(2)}
                 </p>
               </div>
             )}
