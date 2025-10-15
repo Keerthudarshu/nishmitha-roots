@@ -29,7 +29,8 @@ import com.eduprajna.service.StorageService;
 
 @RestController
 @RequestMapping("/api/admin/products")
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "https://nishmitha-roots.vercel.app"}, allowCredentials = "true")
+// Allow local dev, Vercel preview and production frontend domains
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "https://nishmitha-roots.vercel.app", "https://rootstraditional.in", "https://www.rootstraditional.in"}, allowCredentials = "true")
 
 public class ProductController {
     @Autowired
