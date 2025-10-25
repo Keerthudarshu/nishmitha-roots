@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
@@ -33,6 +35,7 @@ import com.eduprajna.service.StorageService;
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "https://nishmitha-roots.vercel.app", "https://rootstraditional.in", "https://www.rootstraditional.in"}, allowCredentials = "true")
 
 public class ProductController {
+    private final Logger log = LoggerFactory.getLogger(ProductController.class);
     @Autowired
     private ProductService productService;
 
@@ -115,10 +118,20 @@ public class ProductController {
     // Serve uploaded images via API so frontend can display them
     @GetMapping("/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) throws IOException {
+        long start = System.currentTimeMillis();
         Resource resource = storageService.loadAsResource(filename);
+        long readDuration = System.currentTimeMillis() - start;
         MediaType contentType = storageService.probeMediaType(filename);
+
+        // Log small diagnostic info to help debug cold-start vs file-read slowness
+        try {
+            log.info("Image request served: {} (readDuration={} ms)", filename, readDuration);
+        } catch (Exception ignored) {}
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CACHE_CONTROL, "max-age=86400, public")
+                .header("X-Served-By", "local-storage")
+                .header("X-Read-Duration-ms", String.valueOf(readDuration))
                 .contentType(contentType)
                 .body(resource);
     }
