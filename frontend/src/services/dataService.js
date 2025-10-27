@@ -111,7 +111,14 @@ const dataService = {
   // Update an existing product in backend
   async updateProduct(productId, productData) {
     try {
-      return await productApi.update(productId, productData);
+      // Backend update endpoint expects multipart/form-data (even when image is not provided)
+      // Wrap the product JSON as a FormData 'product' part so the controller's @RequestPart can bind it.
+      const form = new FormData();
+      form.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
+      const res = await apiClient.put(`/admin/products/${productId}`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return res.data;
     } catch (error) {
       console.error('Error updating product:', error);
       throw error;
