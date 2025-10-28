@@ -38,7 +38,13 @@ const ProductDetails = ({ product }) => {
             </h3>
             <div className="font-body text-muted-foreground space-y-3">
               <div className="whitespace-pre-line">
-                {product?.description || 'No description available.'}
+                {(() => {
+                  // Remove any 'Key Features:' block from the description to avoid duplicate display
+                  const desc = product?.description || '';
+                  if (!desc) return 'No description available.';
+                  const cleaned = desc.replace(/(?:key features?|features?):\s*[\s\S]*?(?:\n\n|$)/i, '').trim();
+                  return cleaned || 'No description available.';
+                })()}
               </div>
               {product?.features && product?.features.length > 0 && (
                 <div className="space-y-2 mt-4">
